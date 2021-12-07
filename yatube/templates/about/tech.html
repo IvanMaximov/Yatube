@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}  
+{% block static %}
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+{% endblock %}
+{% block title %}Технологии{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1>Технологии</h1>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+        <p>Для создания этого веб-приложения использовались следующие технологии:</p>
+        <ul>
+          <li>Python 3.7.7</li>
+          <li>Django 2.2.19</li>
+        </ul>
+      </div>
+    </div>
+  </div> 
+{% endblock%}

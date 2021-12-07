@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block static %}
+   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+{% endblock %}
+{% block title %}
+  {% if is_edit %}
+    Редактировать пост
+  {% else %}
+    Новый пост
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 p-5">
+        <div class="card">
+          <div class="card-header">
+          {% if is_edit %}
+            Редактировать пост
+          {% else %}       
+            Новый пост
+          {% endif %}             
+          </div>
+          <div class="card-body">
+          {% if form.errors %}
+              {% for field in form %}
+                {% for error in field.errors %}            
+                  <div class="alert alert-danger">
+                    {{ error|escape }}
+                  </div>
+                {% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                  {{ error|escape }}
+                </div>
+              {% endfor %}
+          {% endif %}
+
+            <form method="post"
+              {% if is_edit %}
+                action="{% url 'posts:post_edit' is_edit.pk %}" enctype="multipart/form-data"
+              {% else %}
+                action="{% url 'posts:post_create' %}" enctype="multipart/form-data"
+              {% endif %}
+            >
+            {% csrf_token %}
+            <div class="form-group row my-3 p-3">
+              <label for="id_text">
+                {{ form.text.label }}                 
+                <span class="required text-danger" >*</span>                 
+              </label>
+                  {{ form.text }}
+              <small id="id_text-help" class="form-text text-muted">
+                {{ form.text.help_text }}
+              </small>                  
+            </div>            
+            <div class="form-group row my-3 p-3">
+              <label for="id_group">
+                {{ form.group.label }}                  
+              </label>
+              <select name="group" class="form-control" id="id_group">
+                <option value={{ form.group }}</option>
+              </select>
+              <small id="id_group-help" class="form-text text-muted">
+                {{ form.group.help_text }}
+              </small>
+            </div>
+            <div class="form-group row my-3 p-3">
+              <label for="id_image">
+                Картинка                      
+              </label>
+              {{ form.image }} 
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary">
+                {% if is_edit %}
+                  Добавить
+                {% else %}
+                  Сохранить
+                {% endif %} 
+              </button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
