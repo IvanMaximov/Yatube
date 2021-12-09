@@ -51,7 +51,7 @@ def profile(request, username):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     following = False
-    if request.user in post.following.all():
+    if request.user == post.following.all():
         following = True
 
     context = {
@@ -137,8 +137,9 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     post_author = get_object_or_404(User, username=username)
-    if (request.user != post_author
-            and request.user != post_author.following.all()):
+    follow = (Follow.objects.filter(user=request.user,
+                                    author=post_author).count())
+    if request.user != post_author and follow == 0:
         Follow.objects.create(user=request.user, author=post_author)
     return redirect("posts:profile", username=username)
 
