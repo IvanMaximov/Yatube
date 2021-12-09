@@ -61,6 +61,7 @@ class PostURLTest(TestCase):
             '/posts/1/': 'posts/post_detail.html',
             '/create/': 'posts/create.html',
             '/posts/1/edit/': 'posts/create.html',
+            "/follow/": 'posts/follow.html'
         }
         for adress, template in templates_url_names.items():
             with self.subTest(adress=adress):
@@ -72,3 +73,8 @@ class PostURLTest(TestCase):
         неавторизованному пользователю."""
         response = self.guest_client.get('/posts/1/comment/')
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+    def test_follow_url_exists_at_desired_location(self):
+        """Страница follow/ доступна авторизованному пользователю."""
+        response = self.authorized_client.get('/follow/')
+        self.assertEqual(response.status_code, HTTPStatus.OK)

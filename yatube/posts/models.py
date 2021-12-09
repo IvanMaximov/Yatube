@@ -107,3 +107,12 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name="following",
     )
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'author'],
+                       name='unique pair')]
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
+
+    def __str__(self):
+        return f'{self.user} подписан на {self.author}'

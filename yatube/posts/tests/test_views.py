@@ -230,16 +230,19 @@ class NewPostTest(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
+    def posts_page_show_correct_context(self, post):
+        text = post.text
+        author = post.author.username
+        group = post.group.title
+        self.assertEqual(author, 'test_user')
+        self.assertEqual(text, 'Тестовая группа')
+        self.assertEqual(group, 'Тестовая группа 1')
+
     def test_post_appears_on_the_home_page(self):
         """Если указать группу, то пост отображается на главной странице."""
         response = self.authorized_client.get(reverse('posts:index'))
         first_object = response.context['page_obj'][0]
-        post_author_0 = first_object.author.username
-        post_text_0 = first_object.text
-        post_group_0 = first_object.group.title
-        self.assertEqual(post_author_0, 'test_user')
-        self.assertEqual(post_text_0, 'Тестовая группа')
-        self.assertEqual(post_group_0, 'Тестовая группа 1')
+        self. posts_page_show_correct_context(first_object)
 
     def test_post_appears_on_the_group_list_page(self):
         """Если указать группу,
@@ -248,12 +251,7 @@ class NewPostTest(TestCase):
             reverse('posts:group_list', kwargs={'slug': 'test-slug1'})
         )
         first_object = response.context['page_obj'][0]
-        post_author_0 = first_object.author.username
-        post_text_0 = first_object.text
-        post_group_0 = first_object.group.title
-        self.assertEqual(post_author_0, 'test_user')
-        self.assertEqual(post_text_0, 'Тестовая группа')
-        self.assertEqual(post_group_0, 'Тестовая группа 1')
+        self. posts_page_show_correct_context(first_object)
 
     def test_post_appears_on_the_profile_page(self):
         """Если указать группу,
@@ -263,12 +261,7 @@ class NewPostTest(TestCase):
                     kwargs={'username': 'test_user'})
         )
         first_object = response.context['page_obj'][0]
-        post_author_0 = first_object.author.username
-        post_text_0 = first_object.text
-        post_group_0 = first_object.group.title
-        self.assertEqual(post_author_0, 'test_user')
-        self.assertEqual(post_text_0, 'Тестовая группа')
-        self.assertEqual(post_group_0, 'Тестовая группа 1')
+        self. posts_page_show_correct_context(first_object)
 
     def test_post_does_not_appears_on_the_wrong_group_list_page(self):
         """Пост не отображается в группе, для которой он не предназначен."""
@@ -284,7 +277,7 @@ class NewPostTest(TestCase):
         self.assertNotEqual(post_group_0, 'Тестовая группа 1')
 
 
-class CasheIndexTest(TestCase):
+class CacheIndexTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -337,8 +330,7 @@ class FollowTest(TestCase):
         self.authorized_client.force_login(self.user)
 
     def test_follow(self):
-        """Авторизованный пользователь может подписываться
-        и отписываться"""
+        """Авторизованный пользователь может подписываться"""
         Follow.objects.create(
             user=self.user,
             author=FollowTest.user
@@ -352,6 +344,12 @@ class FollowTest(TestCase):
         self.assertEqual(post_group_0, 'Тестовая группа')
         self.assertEqual(post_author_0, 'test_user')
         self.assertEqual(Follow.objects.count(), 1)
+
+    def test_unfollow(self):
+        Follow.objects.create(
+            user=self.user,
+            author=FollowTest.user
+        )
         Follow.objects.filter(
             user=self.user,
             author=FollowTest.user
