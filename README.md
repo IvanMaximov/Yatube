@@ -17,7 +17,7 @@
 
 * Склонировать репозиторий на локальную машину:
 ```bash
-git clone https://github.com/IvanMaximov/yatube.git
+git clone https://github.com/IvanMaximov/Yatube.git
 cd yatube
 ```
 
